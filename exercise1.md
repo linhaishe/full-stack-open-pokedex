@@ -1,0 +1,1 @@
+1. I picked up JavaScript / TypeScrip for my CI language. Linting can use tools which is ESLint and prettier. Testing with Jest, Building with Vite.2. also can use CircleCI / Travis CI / TeamCity / Bamboo /Spinnaker etc.3.I will use GitHub Actions, because we dont have any special requirements
