@@ -21,8 +21,7 @@ jobs:
         run: webpack --mode production
       - name: test
         run: npm run test
-      - uses: microsoft/playwright-github-action@v1
-        with:
-          browser: chromium
+      - name: Install Playwright browsers and dependencies
+        run: npx playwright install --with-deps
       - name: Run E2E tests
         run: npm run test:e2e
