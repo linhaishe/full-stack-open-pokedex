@@ -20,32 +20,28 @@ jobs:
         run: npm install
       - name: Check style
         run: npm run eslint
-      - name: build
+      - name: Build
         run: webpack --mode production
-      # - name: test
-      #   run: npm run test
-      # - name: Install Playwright browsers and dependencies
-      #   run: npx playwright install --with-deps
-      # - name: Run E2E tests
-      #   run: npm run test:e2e
-      # ✅ Render deployment — only when pushing to main
-      # - name: Check secrets presence
-      #   if: ${{ github.event_name == 'push' }}
-      #   run: |
-      #     if [ -z "${{ secrets.RENDER_SERVICE_ID }}" ]; then
-      #       echo "❌ Missing RENDER_SERVICE_ID"
-      #       exit 1
-      #     fi
-      #     if [ -z "${{ secrets.RENDER_API_KEY }}" ]; then
-      #       echo "❌ Missing RENDER_API_KEY"
-      #       exit 1
-      #     fi
-      #     echo "✅ All secrets present."
-      - name: Create deployment
+      - name: Deploy
+        # Only run this step if the branch is main
         if: ${{ github.event_name == 'push' }}
-        uses: sws2apps/render-deployment@main # consider pinning version for stability
+        env:
+          deploy_url: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        run: |
+          curl "$deploy_url"
+  tag_release:
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    needs: [simple_deployment_pipeline]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
         with:
-          serviceId: ${{ secrets.RENDER_SERVICE_ID }}
-          apiKey: ${{ secrets.RENDER_API_KEY }}
-          node-version: lts/Jod # optional
-          cli-version: 2.2.0 # optional
+          fetch-depth: 0 # 保证完整 git 历史，用于 tag
+      - name: Bump patch version and push tag
+        uses: anothrNick/github-tag-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG_PREFIX: v
+          DEFAULT_BUMP: patch # 指定默认 patch bump
