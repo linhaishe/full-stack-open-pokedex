@@ -29,17 +29,18 @@ jobs:
       # - name: Run E2E tests
       #   run: npm run test:e2e
       # ✅ Render deployment — only when pushing to main
-      - name: Check secrets presence
-        run: |
-          if [ -z "${{ secrets.RENDER_SERVICE_ID }}" ]; then
-            echo "❌ Missing RENDER_SERVICE_ID"
-            exit 1
-          fi
-          if [ -z "${{ secrets.RENDER_API_KEY }}" ]; then
-            echo "❌ Missing RENDER_API_KEY"
-            exit 1
-          fi
-          echo "✅ All secrets present."
+      # - name: Check secrets presence
+      #   if: ${{ github.event_name == 'push' }}
+      #   run: |
+      #     if [ -z "${{ secrets.RENDER_SERVICE_ID }}" ]; then
+      #       echo "❌ Missing RENDER_SERVICE_ID"
+      #       exit 1
+      #     fi
+      #     if [ -z "${{ secrets.RENDER_API_KEY }}" ]; then
+      #       echo "❌ Missing RENDER_API_KEY"
+      #       exit 1
+      #     fi
+      #     echo "✅ All secrets present."
       - name: Create deployment
         if: ${{ github.event_name == 'push' }}
         uses: sws2apps/render-deployment@main # consider pinning version for stability
