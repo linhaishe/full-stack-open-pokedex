@@ -58,13 +58,12 @@ jobs:
           COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
         run: echo "$COMMIT_MESSAGES"
 
-      # 判断是否包含 #skip
+      # 判断是否包含 #skip 用 jq 遍历 github.event.commits（支持多 commit）
       - name: Check for #skip in commit messages
         id: check_skip
         run: |
           SKIP=false
-          # 遍历所有 commit messages
-          for msg in "${{ github.event.commits.*.message }}"; do
+          echo '${{ toJson(github.event.commits) }}' | jq -r '.[].message' | while read msg; do
             if [[ "$msg" == *"#skip"* ]]; then
               SKIP=true
             fi
