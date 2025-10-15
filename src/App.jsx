@@ -39,6 +39,8 @@ const App = () => {
     next = pokemonList.find(({ id }) => id === pokemonId + 1)
   }
 
+  console.log('pull test')
+
   return (
     <Routes>
       <Route
