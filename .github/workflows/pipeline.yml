@@ -63,11 +63,7 @@ jobs:
         id: check_skip
         run: |
           SKIP=false
-          echo '${{ toJson(github.event.commits) }}' | jq -r '.[].message' | while read msg; do
-            if [[ "$msg" == *"#skip"* ]]; then
-              SKIP=true
-            fi
-          done
+          echo '${{ toJson(github.event.commits) }}' | jq -r '.[].message' | grep -q '#skip' && SKIP=true
           echo "skip_tag=$SKIP" >> $GITHUB_OUTPUT
 
       # 根据上一步结果决定是否执行 tag
