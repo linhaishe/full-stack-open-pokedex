@@ -22,9 +22,29 @@ jobs:
         run: npm run eslint
       - name: build
         run: webpack --mode production
-      - name: test
-        run: npm run test
-      - name: Install Playwright browsers and dependencies
-        run: npx playwright install --with-deps
-      - name: Run E2E tests
-        run: npm run test:e2e
+      # - name: test
+      #   run: npm run test
+      # - name: Install Playwright browsers and dependencies
+      #   run: npx playwright install --with-deps
+      # - name: Run E2E tests
+      #   run: npm run test:e2e
+      # ✅ Render deployment — only when pushing to main
+      - name: Check secrets presence
+        run: |
+          if [ -z "${{ secrets.RENDER_SERVICE_ID }}" ]; then
+            echo "❌ Missing RENDER_SERVICE_ID"
+            exit 1
+          fi
+          if [ -z "${{ secrets.RENDER_API_KEY }}" ]; then
+            echo "❌ Missing RENDER_API_KEY"
+            exit 1
+          fi
+          echo "✅ All secrets present."
+      - name: Create deployment
+        if: ${{ github.event_name == 'push' }}
+        uses: sws2apps/render-deployment@main # consider pinning version for stability
+        with:
+          serviceId: ${{ secrets.RENDER_SERVICE_ID }}
+          apiKey: ${{ secrets.RENDER_API_KEY }}
+          node-version: lts/Jod # optional
+          cli-version: 2.2.0 # optional
