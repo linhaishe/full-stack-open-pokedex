@@ -22,30 +22,17 @@ jobs:
         run: npm run eslint
       - name: build
         run: webpack --mode production
-      # - name: test
-      #   run: npm run test
-      # - name: Install Playwright browsers and dependencies
-      #   run: npx playwright install --with-deps
-      # - name: Run E2E tests
-      #   run: npm run test:e2e
-      # ✅ Render deployment — only when pushing to main
-      # - name: Check secrets presence
-      #   if: ${{ github.event_name == 'push' }}
-      #   run: |
-      #     if [ -z "${{ secrets.RENDER_SERVICE_ID }}" ]; then
-      #       echo "❌ Missing RENDER_SERVICE_ID"
-      #       exit 1
-      #     fi
-      #     if [ -z "${{ secrets.RENDER_API_KEY }}" ]; then
-      #       echo "❌ Missing RENDER_API_KEY"
-      #       exit 1
-      #     fi
-      #     echo "✅ All secrets present."
-      - name: Create deployment
-        if: ${{ github.event_name == 'push' }}
-        uses: sws2apps/render-deployment@main # consider pinning version for stability
+      - name: Render
+        on: [pull_request]:
+        jobs:
+          deploy:
+            name: Wait for Deploy
+            runs-on: ubuntu-latest
+            steps:
+      - name: Wait for Render Deployment
+        uses: bounceapp/render-action@0.12.0
         with:
-          serviceId: ${{ secrets.RENDER_SERVICE_ID }}
-          apiKey: ${{ secrets.RENDER_API_KEY }}
-          node-version: lts/Jod # optional
-          cli-version: 2.2.0 # optional
+          service-id: srv-d3nhar1gv73c73caqs70
+          retries: 20
+          wait: 16000
+          sleep: 30000
