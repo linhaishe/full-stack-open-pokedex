@@ -73,4 +73,33 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG_PREFIX: v
-          DEFAULT_BUMP: patch # 默认 patch bump
+          DEFAULT_BUMP:
+            patch # 默认 patch bump
+            # ✅ 通知：成功时（只在 main 分支）
+      - name: Notify Discord on success
+        if: success() && github.ref == 'refs/heads/main'
+        uses: TSedlar/discord-webhook-notify@v2
+        with:
+          webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          username: 'GitHub CI Bot'
+          title: '✅ Deployment Successful'
+          description: |
+            A new version of the app has been successfully deployed!
+            Branch: **${{ github.ref_name }}**
+            Commit: `${{ github.sha }}`
+            Author: `${{ github.actor }}`
+          color: '#00FF00'
+
+      # ❌ 通知：失败时（只在 main 分支）
+      - name: Notify Discord on failure
+        if: failure() && github.ref == 'refs/heads/main'
+        uses: TSedlar/discord-webhook-notify@v2
+        with:
+          webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          username: 'GitHub CI Bot'
+          title: '❌ Build Failed'
+          description: |
+            The build failed on branch: **${{ github.ref_name }}**
+            Commit: `${{ github.sha }}`
+            Author: `${{ github.actor }}`
+          color: '#FF0000'
