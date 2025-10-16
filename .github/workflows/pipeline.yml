@@ -78,7 +78,7 @@ jobs:
             # ✅ 通知：成功时（只在 main 分支）
       - name: Notify Discord on success
         if: success() && github.ref == 'refs/heads/main'
-        uses: TSedlar/discord-webhook-notify@v2
+        uses: sarisia/actions-status-discord@v1
         with:
           webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
           username: 'GitHub CI Bot'
@@ -93,7 +93,7 @@ jobs:
       # ❌ 通知：失败时（只在 main 分支）
       - name: Notify Discord on failure
         if: failure() && github.ref == 'refs/heads/main'
-        uses: TSedlar/discord-webhook-notify@v2
+        uses: sarisia/actions-status-discord@v1
         with:
           webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
           username: 'GitHub CI Bot'
