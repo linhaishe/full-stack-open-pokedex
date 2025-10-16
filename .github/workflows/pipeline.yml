@@ -80,7 +80,7 @@ jobs:
         if: success() && github.ref == 'refs/heads/main'
         uses: sarisia/actions-status-discord@v1
         with:
-          webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
           username: 'GitHub CI Bot'
           title: '✅ Deployment Successful'
           description: |
@@ -95,7 +95,7 @@ jobs:
         if: failure() && github.ref == 'refs/heads/main'
         uses: sarisia/actions-status-discord@v1
         with:
-          webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
           username: 'GitHub CI Bot'
           title: '❌ Build Failed'
           description: |
