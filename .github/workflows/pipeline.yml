@@ -108,7 +108,7 @@ jobs:
 
     steps:
       - name: Check service health
-        uses: louislam/url-health-check@v1.4.1
+        uses: jtalk/url-health-check-action@v4
         with:
           # 🩺 你部署在 Render 的网站 URL
           url: 'https://full-stack-open-pokedex-qi4y.onrender.com/'
